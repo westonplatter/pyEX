@@ -1166,7 +1166,7 @@ def intraday(symbol, token='', version='', params={}):
         symbol (string); Ticker to request
         token (string); Access token
         version (string); API version
-        params (dictionary); Query Params included in the HTTP request
+        params (dict); Query Params included in the HTTP request
 
         TODO - add this to the docs? filters: https://iexcloud.io/docs/api/#filter-results
 
@@ -1189,7 +1189,7 @@ def intradayDF(symbol, token='', version='', params={}):
         symbol (string); Ticker to request
         token (string); Access token
         version (string); API version
-        params (dictionary); Query Params included in the HTTP request
+        params (dict); Query Params included in the HTTP request
 
         TODO - add this to the docs? filters: https://iexcloud.io/docs/api/#filter-results
 
