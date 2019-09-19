@@ -97,13 +97,13 @@ class PyEXception(Exception):
     pass
 
 
-def _getJson(url, token='', version='', filter=''):
+def _getJson(url, token='', version='', params={}):
     '''for backwards compat, accepting token and version but ignoring'''
     token = token or os.environ.get('IEX_TOKEN')
     if token:
         if version == 'sandbox':
-            return _getJsonIEXCloudSandbox(url, token, version, filter)
-        return _getJsonIEXCloud(url, token, version, filter)
+            return _getJsonIEXCloudSandbox(url, token, version, params)
+        return _getJsonIEXCloud(url, token, version, params)
     return _getJsonOrig(url)
 
 
@@ -111,23 +111,28 @@ def _getJsonOrig(url):
     raise PyEXception('Old IEX API is deprecated. For a free API token, sign up at https://iexcloud.io')
 
 
-def _getJsonIEXCloud(url, token='', version='beta', filter=''):
+def _getJsonIEXCloud(url, token='', version='beta', params={}):
     '''for iex cloud'''
     url = _URL_PREFIX2.format(version=version) + url
-    if filter:
-        url += '?filter={filter}'.format(filter=filter)
-    resp = requests.get(urlparse(url).geturl(), proxies=_PYEX_PROXIES, params={'token': token})
+    # if filter:
+    #     # url += '?filter={filter}'.format(filter=filter)
+    #     params["filter"] = filter
+    if token:
+        params["token"] = token
+    resp = requests.get(urlparse(url).geturl(), proxies=_PYEX_PROXIES, params=params)
     if resp.status_code == 200:
         return resp.json()
     raise PyEXception('Response %d - ' % resp.status_code, resp.text)
 
 
-def _getJsonIEXCloudSandbox(url, token='', version='beta', filter=''):
+def _getJsonIEXCloudSandbox(url, token='', version='beta', params={}):
     '''for iex cloud'''
     url = _URL_PREFIX2_SANDBOX.format(version='beta') + url
-    if filter:
-        url += '?filter={filter}'.format(filter=filter)
-    resp = requests.get(urlparse(url).geturl(), proxies=_PYEX_PROXIES, params={'token': token})
+    # if filter:
+    #     url += '?filter={filter}'.format(filter=filter)
+    if token:
+        params["token"] = token
+    resp = requests.get(urlparse(url).geturl(), proxies=_PYEX_PROXIES, params=params)
     if resp.status_code == 200:
         return resp.json()
     raise PyEXception('Response %d - ' % resp.status_code, resp.text)

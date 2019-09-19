@@ -1154,7 +1154,7 @@ def institutionalOwnershipDF(symbol, token='', version='', filter=''):
     return df
 
 
-def intraday(symbol, token='', version='', filter=''):
+def intraday(symbol, token='', version='', params={}):
     '''This endpoint will return aggregated intraday prices in one minute buckets
 
     https://iexcloud.io/docs/api/#intraday-prices
@@ -1166,16 +1166,18 @@ def intraday(symbol, token='', version='', filter=''):
         symbol (string); Ticker to request
         token (string); Access token
         version (string); API version
-        filter (string); filters: https://iexcloud.io/docs/api/#filter-results
+        params (dictionary); Query Params included in the HTTP request
+
+        TODO - add this to the docs? filters: https://iexcloud.io/docs/api/#filter-results
 
     Returns:
         dict: result
     '''
     _raiseIfNotStr(symbol)
-    return _getJson('stock/' + symbol + '/intraday-prices', token, version, filter)
+    return _getJson('stock/' + symbol + '/intraday-prices', token, version, params)
 
 
-def intradayDF(symbol, token='', version='', filter=''):
+def intradayDF(symbol, token='', version='', params={}):
     '''This endpoint will return aggregated intraday prices in one minute buckets
 
     https://iexcloud.io/docs/api/#intraday-prices
@@ -1187,12 +1189,16 @@ def intradayDF(symbol, token='', version='', filter=''):
         symbol (string); Ticker to request
         token (string); Access token
         version (string); API version
-        filter (string); filters: https://iexcloud.io/docs/api/#filter-results
+        params (dictionary); Query Params included in the HTTP request
+
+        TODO - add this to the docs? filters: https://iexcloud.io/docs/api/#filter-results
 
     Returns:
         DataFrame: result
     '''
-    val = intraday(symbol, token, version, filter)
+    if filter:
+        params["filter"] = filter
+    val = intraday(symbol, token, version, params)
     df = pd.DataFrame(val)
     _toDatetime(df)
     _reindex(df, 'minute')
